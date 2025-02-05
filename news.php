@@ -71,7 +71,7 @@
             </div>
             <ul class="nav">
             <li class="nav-item"><a href="admin_page.php" class="nav-link">APPLICATIONS</a></li>
-            <li class="nav-item"><a href="approve.php" class="nav-link">APPROVED</a></li>
+            <li class="nav-item"><a href="approved.php" class="nav-link">APPROVED</a></li>
                 <li class="nav-item"><a href="news.php" class="nav-link">NEWS FEED</a></li>
                 <li class="nav-item"><a href="admin.php" class="nav-link">LOG OUT</a></li>
             </ul>

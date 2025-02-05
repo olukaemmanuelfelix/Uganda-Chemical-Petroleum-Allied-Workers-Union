@@ -1,10 +1,76 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-// database connection
+require 'vendor/autoload.php';
+
+// Database connection
 $conn = new mysqli('localhost', 'root', '', 'membership');
-$query = "SELECT * FROM register"; // select from the db table
-$result = mysqli_query($conn, $query);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    // Fetch the record to get email and other details
+    $stmt = $conn->prepare("SELECT * FROM register WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+
+    $email = $row['Email'];
+    $fullname = $row['Fullname'];
+
+    // Insert the approved record into the approved table
+    $stmt = $conn->prepare("INSERT INTO approved (id, Fullname, Email, Companyname, Phone, NIN, Nationalid, Employmentnumber, Employmentid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("isssissss", $row['id'], $row['Fullname'], $row['Email'], $row['Companyname'], $row['Phone'], $row['NIN'], $row['Nationalid'], $row['Employmentnumber'], $row['Employmentid']);
+    $stmt->execute();
+    $stmt->close();
+
+    // Delete the record from the register table
+    $stmt = $conn->prepare("DELETE FROM register WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
+    // Send email notification using PHPMailer
+    $mail = new PHPMailer(true);
+    try {
+         // Server settings
+         $mail->isSMTP();
+         $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to send through
+         $mail->SMTPAuth = true;
+         $mail->Username = 'ugandachemicalpetroleumalliedw@gmail.com'; // Your Gmail address
+         $mail->Password = 'fkes vtib alnm bnpm'; // Your Gmail smtp app password or app-specific password
+         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+         $mail->Port = 587;
+ 
+         // Recipients
+         $mail->setFrom('ugandachemicalpetroleumalliedw@gmail.com', 'Uganda Chemical Petroleum & Allied Workers Union');
+         $mail->addAddress($email); // Add a recipient
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Application Approved';
+        $mail->Body    = 'Dear ' . $fullname . ',<br><br>We are pleased to inform you that your application has been approved.<br><br>Best regards,<br>Uganda Chemical Petroleum & Allied Workers Union';
+        $mail->AltBody = 'Dear ' . $fullname . ',\n\nWe are pleased to inform you that your application has been approved.\n\nBest regards,\nUganda Chemical Petroleum & Allied Workers Union';
+
+        $mail->send();
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+
+    // Redirect to the approved page
+    header("Location: approved.php");
+    exit();
+}
+
+// Fetch approved records
+$query = "SELECT * FROM approved";
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +78,7 @@ $result = mysqli_query($conn, $query);
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Form</title>
+    <title>Approved Applications</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
@@ -98,7 +164,6 @@ $result = mysqli_query($conn, $query);
             <th>National ID</th>
             <th>Employee NO.</th>
             <th>Employee ID</th>
-            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -118,12 +183,6 @@ $result = mysqli_query($conn, $query);
             <td><?php echo $row['Employmentnumber']; ?></td>
             <td>
                 <img src="<?php echo $row['Employmentid']; ?>" alt="Employment ID" class="clickable-image" style="width: 50px; height: auto; cursor: pointer;">
-            </td>
-            <td class="p-3">
-                <div class="d-flex justify-content-between">
-                <a href="approved.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-sm">Approve</a>
-                    <a href="decline.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm">Decline</a>
-                </div>
             </td>
         </tr>
         <?php } ?>

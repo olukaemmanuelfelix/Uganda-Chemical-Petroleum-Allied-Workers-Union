@@ -77,12 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
  
  <div class="NavLinks">
     <ul class="NavLinks">
-        <li><a href="index.html" class="k">HOME</a></li>
-        <li><a href="feed.html" class="w">NEWS FEED</a></li>
-        <li><a href="contact_us.html" class="e">CONTACT US</a></li>
-        <li><a href="structure.html" class="e">STRUCTURE</a></li>
+        <li><a href="index.php" class="k">HOME</a></li>
+        <li><a href="feed.php" class="w">NEWS FEED</a></li>
+        <li><a href="contact_us.php" class="e">CONTACT US</a></li>
+        <li><a href="structure.php" class="e">STRUCTURE</a></li>
         <li><a href="" class="y"></a></li>
-        <li><a href="membership.html" class="r">MEMBERSHIP</a></li>
+        <li><a href="membership.php" class="r">MEMBERSHIP</a></li>
     </ul>
  </div>
 
@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    <div class="q_links">
     <h4>Quick links</h4>
     <p class="tol"></p>
-    <a href=""><p>Home</p></a>
+    <a href="i"><p>Home</p></a>
     <a href=""><p>News Feed</p></a>
     <a href=""><p>Contact Us</p></a>
     <a href=""><p>Membership</p></a>

@@ -42,13 +42,13 @@ if (isset($_GET['id'])) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to send through
         $mail->SMTPAuth = true;
-        $mail->Username = 'oluukaemmanuelfelix@gmail.com'; // Your Gmail address
-        $mail->Password = 'ixnr icnb yhal vyyw'; // Your Gmail smtp app password or app-specific password
+        $mail->Username = 'ugandachemicalpetroleumalliedw@gmail.com'; // Your Gmail address
+        $mail->Password = 'fkes vtib alnm bnpm'; // Your Gmail smtp app password or app-specific password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
         // Recipients
-        $mail->setFrom('oluukaemmanuelfelix@gmail.com', 'Uganda Chemical Petroleum & Allied Workers Union');
+        $mail->setFrom('ugandachemicalpetroleumalliedw@gmail.com', 'Uganda Chemical Petroleum & Allied Workers Union');
         $mail->addAddress($email); // Add a recipient
 
         // Content
